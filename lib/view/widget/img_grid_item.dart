@@ -31,24 +31,21 @@ class _ImageGridItemWidgetState extends State<ImageGridItemWidget> {
           isHover = false;
         });
       },
-      child: ValueListenableBuilder<Hits?>(
-        valueListenable: hoverNotifier,
-        builder: (BuildContext context, Hits? value, Widget? child) {
-          return ClipRRect(
-            borderRadius:
-                BorderRadius.circular(ImageGridItemWidget.borderRadius),
-            child: GestureDetector(
-              onTap: () {},
-              child: Stack(
-                children: [
-                  _buildImage(item: widget.item),
-                  _buildHoverEffect(isHover: isHover),
-                  _buildMetaDataView(item: widget.item),
-                ],
-              ),
+      child: Tooltip(
+        message: '${widget.item.tags}',
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(ImageGridItemWidget.borderRadius),
+          child: GestureDetector(
+            onTap: () {},
+            child: Stack(
+              children: [
+                _buildImage(item: widget.item),
+                _buildHoverEffect(isHover: isHover),
+                _buildMetaDataView(item: widget.item),
+              ],
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
