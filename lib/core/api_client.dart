@@ -20,7 +20,9 @@ class ApiClient {
           'per_page': ApiConstants.perPage
         });
 
-    _dio.interceptors.add(LogInterceptor(request: true, error: true));
+    _dio.interceptors.add(LogInterceptor(
+        responseHeader: false,
+        request: false, error: true));
     _dio.options = options;
   }
 }

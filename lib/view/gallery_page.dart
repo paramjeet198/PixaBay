@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +22,9 @@ class _GalleryPageState extends State<GalleryPage> {
   late final Dio dio;
   List<Hits> dataList = [];
 
+  Timer? _debounce;
+  final Duration _debounceDuration = const Duration(seconds: 1);
+
   @override
   void initState() {
     super.initState();
@@ -27,7 +32,19 @@ class _GalleryPageState extends State<GalleryPage> {
     _fetchImages('');
   }
 
+  Future<void> _onSearchChanged(String query) async {
+    if (_debounce?.isActive ?? false) {
+      _debounce?.cancel();
+    }
+
+    _debounce = Timer(_debounceDuration, () async {
+      await _fetchImages(query);
+    });
+  }
+
   Future<void> _fetchImages(String query) async {
+    Log.v('_fetchImages: $query');
+
     PixaBayResponse response =
         await PixaBayDataSource(dio: dio).getImages(query: query);
     dataList = response.hits!;
@@ -41,12 +58,24 @@ class _GalleryPageState extends State<GalleryPage> {
       appBar: AppBar(
         title: const Text('Gallery'),
         centerTitle: true,
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(48.0),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(56.0),
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 250),
             child: TextField(
-                decoration: InputDecoration(hintText: "Search Images...")),
+                onChanged: (value) => _onSearchChanged(value),
+                decoration: InputDecoration(
+                    hintText: "Search for all images on Pixabay",
+                    contentPadding: EdgeInsets.zero,
+                    alignLabelWithHint: true,
+                    hintStyle:
+                        const TextStyle(fontSize: 13, color: Colors.grey),
+                    prefixIcon:  Padding(
+                      padding: const EdgeInsets.only(left: 20,right: 5),
+                      child: Image.asset('assets/img/search_icon.png',color: Colors.green,height: 40,width: 20,),
+                    ),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(50)))),
           ),
         ),
       ),
@@ -71,20 +100,6 @@ class _GalleryPageState extends State<GalleryPage> {
     );
   }
 
-  Widget _buildWebItem({required Hits item}) {
-    hoverNotifier.value = item;
-
-    return MouseRegion(
-        // cursor: MouseCursor.defer,
-        onHover: (event) {
-          hoverNotifier.value?.isHovering = true;
-        },
-        onExit: (event) {
-          hoverNotifier.value?.isHovering = false;
-        },
-        child: ImageGridItemWidget(item: item));
-  }
-
   SliverGridDelegateWithFixedCrossAxisCount _layoutDelegate(
       BuildContext context) {
     return SliverGridDelegateWithFixedCrossAxisCount(
@@ -96,7 +111,7 @@ class _GalleryPageState extends State<GalleryPage> {
 
   @override
   void dispose() {
-    hoverNotifier.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 }
