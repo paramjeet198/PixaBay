@@ -5,6 +5,6 @@ class ApiConstants {
   static const String apiKey = '13599619-ffa1903916db893185fc12824';
 
   static const String imgType = 'all';
-  static const int perPage = 30;
+  static const int perPage = 4;
   static const bool isPretty = kDebugMode ? true : false;
 }

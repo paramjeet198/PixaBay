@@ -9,9 +9,11 @@ class PixaBayDataSource {
 
   PixaBayDataSource({required this.dio});
 
-  Future<PixaBayResponse> getImages({required String query}) async {
+  Future<PixaBayResponse> getImages(
+      {required String query, required int page}) async {
 
-    Map<String, dynamic> params = {'q': query};
+    await Future.delayed(const Duration(seconds: 1));
+    Map<String, dynamic> params = {'q': query, 'page': page};
 
     try {
       final apiResponse = await dio.get('', queryParameters: params);
@@ -19,13 +21,12 @@ class PixaBayDataSource {
         final res = json.decode(apiResponse.toString()) as Map<String, dynamic>;
         return PixaBayResponse.fromJson(res);
       } else {
-        throw Exception('API request failed with status code: ${apiResponse.statusCode}');
+        throw Exception(
+            'API request failed with status code: ${apiResponse.statusCode}');
       }
     } catch (e) {
-      Log.v(e.toString());
+      Log.v('Error: ${e.toString()}');
       rethrow;
     }
   }
-
-
 }

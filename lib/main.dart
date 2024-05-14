@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:pixabay/view/gallery_page.dart';
+import 'package:pixabay/view/state/gallery_controller.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider<GalleryController>(create: (context) => GalleryController()),
+
+      ],
+      child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

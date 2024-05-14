@@ -21,8 +21,11 @@ class ApiClient {
         });
 
     _dio.interceptors.add(LogInterceptor(
-        responseHeader: false,
-        request: false, error: true));
+      responseHeader: false,
+      request: false,
+      error: true,
+      // responseBody: true
+    ));
     _dio.options = options;
   }
 }

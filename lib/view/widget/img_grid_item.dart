@@ -1,7 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:pixabay/utility/log.dart';
-import 'package:pixabay/view/state/value_notifier.dart';
 
 import '../../data/pixa_bay_response.dart';
 
@@ -51,12 +50,16 @@ class _ImageGridItemWidgetState extends State<ImageGridItemWidget> {
   }
 
   Widget _buildImage({required final Hits item}) {
-    return Image.network(
-      item.largeImageURL!,
-      fit: BoxFit.cover,
-      width: double.infinity,
-      height: double.infinity,
-    );
+    return CachedNetworkImage(
+        imageUrl: item.largeImageURL!,
+        fit: BoxFit.cover,
+        placeholder: (context, url) {
+          return Container(color: Colors.amberAccent,);
+        },
+        placeholderFadeInDuration: const Duration(milliseconds: 0),
+        fadeOutDuration: const Duration(milliseconds: 0),
+        height: double.infinity,
+        width: double.infinity);
   }
 
   Widget _buildMetaDataView({required final Hits item}) {
@@ -87,12 +90,18 @@ class _ImageGridItemWidgetState extends State<ImageGridItemWidget> {
         ? Container(
             decoration: BoxDecoration(
               color: isHover
-                  ? Colors.black.withOpacity(0.7)
-                  : Colors.black.withOpacity(0.2),
+                  ? Colors.black.withOpacity(0.8)
+                  : Colors.black.withOpacity(0.3),
               borderRadius:
                   BorderRadius.circular(ImageGridItemWidget.borderRadius),
             ),
           )
-        : const SizedBox.shrink();
+        : Container(
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.3),
+              borderRadius:
+                  BorderRadius.circular(ImageGridItemWidget.borderRadius),
+            ),
+          );
   }
 }
