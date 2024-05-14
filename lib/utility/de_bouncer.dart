@@ -9,12 +9,10 @@ class EasyDebounce {
       {required String tag,
       required Duration duration,
       required EasyDebounceCallBack callBack}) {
-
     if (_debounceMap.containsKey(tag)) cancel(tag: tag);
 
     _debounceMap[tag] = Timer(duration, callBack);
   }
-
 
   /// Cancels any active debounce operation with the given [tag].
   static void cancel({required String tag}) {

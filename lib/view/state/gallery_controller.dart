@@ -49,6 +49,6 @@ class GalleryController extends ChangeNotifier {
           notifyListeners();
         });
 
-    Log.v(EasyDebounce().toString());
+    // Log.v(EasyDebounce().toString());
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:pixabay/utility/log.dart';
 import 'package:pixabay/view/state/gallery_controller.dart';
 import 'package:pixabay/view/widget/img_grid_item.dart';
 import 'package:provider/provider.dart';
@@ -13,13 +12,13 @@ class GalleryPage extends StatefulWidget {
 }
 
 class _GalleryPageState extends State<GalleryPage> {
-  var _searchController = TextEditingController();
+  final _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Provider.of<GalleryController>(context, listen: false).loadImages('');
+      context.read<GalleryController>().loadImages('');
     });
   }
 
@@ -50,8 +49,6 @@ class _GalleryPageState extends State<GalleryPage> {
               if (notification is ScrollEndNotification &&
                   notification.metrics.pixels ==
                       notification.metrics.maxScrollExtent) {
-                // page++;
-                // _loadImages('', page);
                 model.loadImages(_searchController.text.toString().trim());
               }
               return true;
@@ -91,8 +88,7 @@ class _GalleryPageState extends State<GalleryPage> {
     return TextField(
         controller: _searchController,
         onChanged: (value) =>
-            Provider.of<GalleryController>(context, listen: false)
-                .onSearchChanged(value),
+            context.read<GalleryController>().onSearchChanged(value),
         decoration: InputDecoration(
             hintText: "Search for all images on Pixabay",
             contentPadding: EdgeInsets.zero,
@@ -118,11 +114,5 @@ class _GalleryPageState extends State<GalleryPage> {
         childAspectRatio: 1.5,
         mainAxisSpacing: 10,
         crossAxisSpacing: 10);
-  }
-
-  @override
-  void dispose() {
-    // _debounce?.cancel();
-    super.dispose();
   }
 }
